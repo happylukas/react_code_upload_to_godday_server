@@ -6,317 +6,346 @@ import $ from 'jquery';
 import Popper from 'popper.js';
 
 class Models extends Component {
-	
-	constructor(props){
-		super(props);
-		
-		this.resendOtp = this.resendOtp.bind(this);
-        this.getOtpWindow = this.getOtpWindow.bind(this); 
-		 
-		
-	}
-	
-	 componentDidMount() {
-     window.addEventListener('load', this.handleLoad);
-	 
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      delete_account_password: ''
     }
-	
-	
-  
-  handleLoad(){
-	  
-	  
-	 
-	  var user = JSON.parse(sessionStorage.getItem("user"));
-	 
-	   if (user.error != "true") {
-	  
-		$('#full_name').val(user.data.full_name);		
-		$("#priview").css('background-image','url('+user.data.profile_pic+')');
-		$('#email').val(user.data.email);
-		$('#country').val(user.data.country);
-		
-	  }
-	  
+
+    this.resendOtp = this.resendOtp.bind(this);
+    this.getOtpWindow = this.getOtpWindow.bind(this);
+
+
   }
-  
-  getOtpWindow(){
-	  
-	   var current_pass = $("#current_pass").val();
-	   var new_pass     = $("#new_pass").val();
-	   var conf_new_pass = $("#conf_new_pass").val();
-	    var password = sessionStorage.getItem("password");
-	   
-	   if(current_pass != password){
-		  $('#errormessage').text("Current Password is not correct!"); 
-		  $('#errormodel').modal();
-	   }
-	   else if(new_pass != conf_new_pass){
-		  $('#errormessage').text("Confirm password does not match!"); 
-		  $('#errormodel').modal();
-	   }
-	   else
-	   {
-	   $('#resetotp').modal();
-	   this.resendOtp();
-	   }
+
+  componentDidMount() {
+    window.addEventListener('load', this.handleLoad);
+
   }
-  
-    changePassword(){
-		
-		
-	   var endpoint = 'user/auth/password/update_password_otp';
-	
-	   var current_pass = $("#current_pass").val();
-	   var new_pass     = $("#new_pass").val();
-	   var otp = $("#passwordotp").val();
-	   var conf_new_pass = $("#conf_new_pass").val();
-	   	   var user = JSON.parse(sessionStorage.getItem("user"));
-		   var phone =  sessionStorage.getItem("phone");
 
-	   
-	   var auth = user.success.token;
-	   
-	      
-	   var password = sessionStorage.getItem("password");
-	   
-	    $.ajax({
-        url: Config.baseurl,
-        type: "POST",
-        crossDomain: true,
-        data: {endpoint:endpoint,current_pass:current_pass,new_pass:new_pass,phone:phone,otp:otp},
-        dataType: "json",
-        success:function(result){
-            console.log(result);
-			
-			var successcode = JSON.parse(result);
-			$('#errormessage').text(successcode.msg);
-			$('#errormodel').modal();
-			
-        //(result.data);
-  
-		  
-        },
-        error:function(xhr,status,error){
-            alert(status);
-        }
-    });
-		
-	}
-	
-	
-	resendOtp(){
-		//alert('kkk');
-		var endpoint = 'user/auth/resend_pass_otp';
-		var phone =  sessionStorage.getItem("phone");
-		$.ajax({
-        url: Config.baseurl,
-        type: "POST",
-        crossDomain: true,
-        data: {endpoint:endpoint,phone:phone},
-        dataType: "json",
-        success:function(result){
-            console.log(result);
-			
-			//var endpoint = 'user/account/profile/update';
-	   var endpoint = 'user/account/profile/details';
-	   var user = JSON.parse(sessionStorage.getItem("user"));
-	   var profile_pic = sessionStorage.getItem("tempImg");
-	   //var auth = user.data.fcm_token;
-	   var auth = user.success.token;
-	   console.log(auth);
-	   
-	   var email  = $('#email').val();
-	   var full_name = $('#full_name').val();
-	   var country =  $('#country').val();
-	   var password = sessionStorage.getItem("password");
-	    $.ajax({
-        url: Config.baseurl,
-        type: "POST",
-        crossDomain: true,
-        data: {endpoint:endpoint,auth:auth},
-        dataType: "json",
-        success:function(result){
-            console.log(result);
-			//$('#updateprofilesuccess').modal();
-			
-			
-        //(result.data);
-  
-		  
-        },
-        error:function(xhr,status,error){
-            alert(status);
-        }
-    });
-			
-			
-			
-				  
-        },
-        error:function(xhr,status,error){
-            alert(status);
-        }
-    });
-		
-	}
-	
-	
-	
-	updateOk(){
-		
-		
-		var endpoint = 'user/auth/login';
-	    var phone =  sessionStorage.getItem('phone');
-		var password = sessionStorage.getItem('password');
-	   
-		
-       	 $.ajax({
-        url: Config.baseurl,
-        type: "POST",
-        crossDomain: true,
-        data: {endpoint:endpoint,phone:phone,password:password},
-        dataType: "json",
-        success:function(result){
-            //alert(result);
-			var user = JSON.parse(result);
-			sessionStorage.setItem("user", JSON.stringify(user));
-			sessionStorage.setItem("password", password);
-			//console.log(sessionStorage.getItem("user"));
-			
-			 window.location.reload(false);
-			
-        //(result.data);
-  
-		  
-        },
-        error:function(xhr,status,error){
-            alert(status);
-        }
-    });
-	}
-	
-	logout(){
-	  sessionStorage.removeItem("user");
-	  window.location = '/login';
-   }
-   
-   upload_pic(){
-	   
-	
 
-    
-        var fd = new FormData();
-        var files = $('#imageUpload')[0].files[0];
-         
-		var endpoint = '/upload';
-		fd.append('file',files);
-		fd.append('endpoint',endpoint);
 
+  handleLoad() {
+
+
+
+    var user = JSON.parse(sessionStorage.getItem("user"));
+
+    if (user.error != "true") {
+
+      $('#full_name').val(user.data.full_name);
+      $("#priview").css('background-image', 'url(' + user.data.profile_pic + ')');
+      $('#email').val(user.data.email);
+      $('#country').val(user.data.country);
+
+    }
+
+  }
+
+  getOtpWindow() {
+
+    var current_pass = $("#current_pass").val();
+    var new_pass = $("#new_pass").val();
+    var conf_new_pass = $("#conf_new_pass").val();
+    var password = sessionStorage.getItem("password");
+
+    if (current_pass != password) {
+      $('#errormessage').text("Current Password is not correct!");
+      $('#errormodel').modal();
+    }
+    else if (new_pass != conf_new_pass) {
+      $('#errormessage').text("Confirm password does not match!");
+      $('#errormodel').modal();
+    }
+    else {
+      $('#resetotp').modal();
+      this.resendOtp();
+    }
+  }
+
+  changePassword() {
+
+
+    var endpoint = 'user/auth/password/update_password_otp';
+
+    var current_pass = $("#current_pass").val();
+    var new_pass = $("#new_pass").val();
+    var otp = $("#passwordotp").val();
+    var conf_new_pass = $("#conf_new_pass").val();
+    var user = JSON.parse(sessionStorage.getItem("user"));
+    var phone = sessionStorage.getItem("phone");
+
+
+    var auth = user.success.token;
+
+
+    var password = sessionStorage.getItem("password");
+
+    $.ajax({
+      url: Config.baseurl,
+      type: "POST",
+      crossDomain: true,
+      data: { endpoint: endpoint, current_pass: current_pass, new_pass: new_pass, phone: phone, otp: otp },
+      dataType: "json",
+      success: function (result) {
+        console.log(result);
+
+        var successcode = JSON.parse(result);
+        $('#errormessage').text(successcode.msg);
+        $('#errormodel').modal();
+
+        //(result.data);
+
+
+      },
+      error: function (xhr, status, error) {
+        alert(status);
+      }
+    });
+
+  }
+
+
+  resendOtp() {
+    //alert('kkk');
+    var endpoint = 'user/auth/resend_pass_otp';
+    var phone = sessionStorage.getItem("phone");
+    $.ajax({
+      url: Config.baseurl,
+      type: "POST",
+      crossDomain: true,
+      data: { endpoint: endpoint, phone: phone },
+      dataType: "json",
+      success: function (result) {
+        console.log(result);
+
+        //var endpoint = 'user/account/profile/update';
+        var endpoint = 'user/account/profile/details';
+        var user = JSON.parse(sessionStorage.getItem("user"));
+        var profile_pic = sessionStorage.getItem("tempImg");
+        //var auth = user.data.fcm_token;
+        var auth = user.success.token;
+        console.log(auth);
+
+        var email = $('#email').val();
+        var full_name = $('#full_name').val();
+        var country = $('#country').val();
+        var password = sessionStorage.getItem("password");
         $.ajax({
-            url: Config.baseurl,
-            type: 'post',
-            data: fd,
-            contentType: false,
-            processData: false,
-            success: function(response){
-                if(response != 0){
-                   // alert(response);
-                    $("#priview").css('background-image','url('+response+')'); // Display image element
-					sessionStorage.setItem("tempImg", response);
-                }else{
-                    alert('some thing went wrong !');
-                }
-            },
-        });
-    
+          url: Config.baseurl,
+          type: "POST",
+          crossDomain: true,
+          data: { endpoint: endpoint, auth: auth },
+          dataType: "json",
+          success: function (result) {
+            console.log(result);
+            //$('#updateprofilesuccess').modal();
 
-   }
-   
-   update_profile(){
-	   
-	   var endpoint = 'user/account/profile/update';
-	   //var endpoint = 'user/account/profile/details';
-	   var user = JSON.parse(sessionStorage.getItem("user"));
-	   var profile_pic = sessionStorage.getItem("tempImg");
-	   //var auth = user.data.fcm_token;
-	   var auth = user.success.token;
-	   console.log(auth);
-	   
-	   var email  = $('#email').val();
-	   var full_name = $('#full_name').val();
-	   var country =  $('#country').val();
-	   var password = sessionStorage.getItem("password");
-	    $.ajax({
-        url: Config.baseurl,
-        type: "POST",
-        crossDomain: true,
-        data: {endpoint:endpoint,email:email,full_name:full_name,country:country,profile_pic:profile_pic,auth:auth,password:password},
-        dataType: "json",
-        success:function(result){
-            console.log(result);
-			$('#updateprofilesuccess').modal();
-			
-			
-        //(result.data);
-  
-		  
-        },
-        error:function(xhr,status,error){
+
+            //(result.data);
+
+
+          },
+          error: function (xhr, status, error) {
             alert(status);
-        }
+          }
+        });
+
+
+
+
+      },
+      error: function (xhr, status, error) {
+        alert(status);
+      }
     });
-	   
-	   
-   }
-   
-   
-   getProfile(){
-	   
-	   //var endpoint = 'user/account/profile/update';
-	   var endpoint = 'user/account/profile/details';
-	   var user = JSON.parse(sessionStorage.getItem("user"));
-	   var profile_pic = sessionStorage.getItem("tempImg");
-	   //var auth = user.data.fcm_token;
-	   var auth = user.success.token;
-	   console.log(auth);
-	   
-	   var email  = $('#email').val();
-	   var full_name = $('#full_name').val();
-	   var country =  $('#country').val();
-	   var password = sessionStorage.getItem("password");
-	    $.ajax({
-        url: Config.baseurl,
-        type: "POST",
-        crossDomain: true,
-        data: {endpoint:endpoint,auth:auth},
-        dataType: "json",
-        success:function(result){
-            console.log(result);
-			//$('#updateprofilesuccess').modal();
-			
-			
+
+  }
+
+
+
+  updateOk() {
+
+
+    var endpoint = 'user/auth/login';
+    var phone = sessionStorage.getItem('phone');
+    var password = sessionStorage.getItem('password');
+
+
+    $.ajax({
+      url: Config.baseurl,
+      type: "POST",
+      crossDomain: true,
+      data: { endpoint: endpoint, phone: phone, password: password },
+      dataType: "json",
+      success: function (result) {
+        //alert(result);
+        var user = JSON.parse(result);
+        sessionStorage.setItem("user", JSON.stringify(user));
+        sessionStorage.setItem("password", password);
+        //console.log(sessionStorage.getItem("user"));
+
+        window.location.reload(false);
+
         //(result.data);
-  
-		  
-        },
-        error:function(xhr,status,error){
-            alert(status);
-        }
+
+
+      },
+      error: function (xhr, status, error) {
+        alert(status);
+      }
     });
-   }
-   
-   
- 
+  }
+
+  logout() {
+    sessionStorage.removeItem("user");
+    window.location = '/login';
+  }
+
+  upload_pic() {
+
+
+
+
+    var fd = new FormData();
+    var files = $('#imageUpload')[0].files[0];
+
+    var endpoint = '/upload';
+    fd.append('file', files);
+    fd.append('endpoint', endpoint);
+
+    $.ajax({
+      url: Config.baseurl,
+      type: 'post',
+      data: fd,
+      contentType: false,
+      processData: false,
+      success: function (response) {
+        if (response != 0) {
+          // alert(response);
+          $("#priview").css('background-image', 'url(' + response + ')'); // Display image element
+          sessionStorage.setItem("tempImg", response);
+        } else {
+          alert('some thing went wrong !');
+        }
+      },
+    });
+
+
+  }
+
+  update_profile() {
+
+    var endpoint = 'user/account/profile/update';
+    //var endpoint = 'user/account/profile/details';
+    var user = JSON.parse(sessionStorage.getItem("user"));
+    var profile_pic = sessionStorage.getItem("tempImg");
+    //var auth = user.data.fcm_token;
+    var auth = user.success.token;
+    console.log(auth);
+
+    var email = $('#email').val();
+    var full_name = $('#full_name').val();
+    var country = $('#country').val();
+    var password = sessionStorage.getItem("password");
+    $.ajax({
+      url: Config.baseurl,
+      type: "POST",
+      crossDomain: true,
+      data: { endpoint: endpoint, email: email, full_name: full_name, country: country, profile_pic: profile_pic, auth: auth, password: password },
+      dataType: "json",
+      success: function (result) {
+        console.log(result);
+        $('#updateprofilesuccess').modal();
+
+
+        //(result.data);
+
+
+      },
+      error: function (xhr, status, error) {
+        alert(status);
+      }
+    });
+
+
+  }
+
+
+  getProfile() {
+
+    //var endpoint = 'user/account/profile/update';
+    var endpoint = 'user/account/profile/details';
+    var user = JSON.parse(sessionStorage.getItem("user"));
+    var profile_pic = sessionStorage.getItem("tempImg");
+    //var auth = user.data.fcm_token;
+    var auth = user.success.token;
+    console.log(auth);
+
+    var email = $('#email').val();
+    var full_name = $('#full_name').val();
+    var country = $('#country').val();
+    var password = sessionStorage.getItem("password");
+    $.ajax({
+      url: Config.baseurl,
+      type: "POST",
+      crossDomain: true,
+      data: { endpoint: endpoint, auth: auth },
+      dataType: "json",
+      success: function (result) {
+        console.log(result);
+        //$('#updateprofilesuccess').modal();
+
+
+        //(result.data);
+
+
+      },
+      error: function (xhr, status, error) {
+        alert(status);
+      }
+    });
+  }
+
+  handle_password = (e) => {
+
+    this.setState({ delete_account_password: e.target.value });
+  }
+
+  delete_account = () => {
+    let user = JSON.parse(sessionStorage.getItem("user"));
+    let auth = user.success.token;
+    let password = sessionStorage.getItem("password");
+    if (password === this.state.delete_account_password) {
+      let endpoint = 'user/account/profile/delete';
+      let url = Config.baseurl2;
+      let request_type = 'POST';
+      $.ajax(url, {
+        method: 'POST',
+        dataType: "json",
+        data: { endpoint: endpoint, request_type: request_type, auth: auth },
+        success: function () {
+          sessionStorage.removeItem("user");
+          window.location = '/login';
+        },
+        error: function (xhr, status, error) {
+          alert(status);
+        }
+      });
+    }
+    else alert("Invalid password");
+
+  }
+
+  delete_account_modal_hide = () => {
+    $('#deleteAccount').modal('toggle');
+  }
+
   render() {
-	 
-	
-	  
+
     return (
-	  
-	    
-        
-        <div>
+      <div>
         {/*Invite User via WayaChat*/}
         <div className="modal fade contactlist" id="inviteWayaChats" tabIndex={-1} role="dialog">
           <div className="modal-dialog" role="document">
@@ -467,10 +496,10 @@ class Models extends Component {
                   <div className="form-label-group">
                     <table className="table">
                       <tbody><tr>
-                          <td>
-                            <span>Transfer Amount</span>
-                          </td>
-                        </tr>
+                        <td>
+                          <span>Transfer Amount</span>
+                        </td>
+                      </tr>
                         <tr>
                           <td>
                             <h2>N</h2>
@@ -515,25 +544,25 @@ class Models extends Component {
                       <label htmlFor="imageUpload" />
                     </div>
                     <div className="avatar-preview">
-                      <div id="priview" style={{backgroundImage: 'url(assets/images/faces/face1.jpg)'}}>
+                      <div id="priview" style={{ backgroundImage: 'url(assets/images/faces/face1.jpg)' }}>
                       </div>
                     </div>
                   </div>
-				  <label>Full Name </label>
+                  <label>Full Name </label>
                   <div className="form-label-group">
-				    
+
                     <input type="text" className="form-control form-control-lg" id="full_name" placeholder="Surname Name" />
-                    
+
                   </div>
-				  <label>Email</label>
+                  <label>Email</label>
                   <div className="form-label-group">
                     <input type="email" className="form-control form-control-lg" id="email" placeholder="Email" />
-                    
+
                   </div>
-				  <label>Country</label>
+                  <label>Country</label>
                   <div className="form-label-group">
                     <input type="text" className="form-control form-control-lg" id="country" placeholder="Phone number" />
-                    
+
                   </div>
                 </form>
               </div>
@@ -556,24 +585,24 @@ class Models extends Component {
               <div className="modal-body mx-3">
                 <form>
                   <div className="form-label-group">
-				    <p>Current Password</p>
+                    <p>Current Password</p>
                     <input type="password" className="form-control form-control-lg" id="current_pass" placeholder="Current Password" />
-                    
+
                   </div>
                   <div className="form-label-group">
-				    <p> New Password </p>
+                    <p> New Password </p>
                     <input type="password" className="form-control form-control-lg" id="new_pass" placeholder="New Password" />
-                    
+
                   </div>
                   <div className="form-label-group">
-				  <p>Confirm New Password</p>
+                    <p>Confirm New Password</p>
                     <input type="password" className="form-control form-control-lg" id="conf_new_pass" placeholder="Confirm New Password" />
-                    
+
                   </div>
                 </form>
               </div>
               <div className="modal-footer d-flex justify-content-center">
-                
+
                 <button onClick={this.getOtpWindow} className="btn btn-gradient-primary btn-lg ">Confirm</button>
               </div>
             </div>
@@ -585,7 +614,7 @@ class Models extends Component {
             <div className="modal-content">
               <div className="modal-header text-center">
                 <h4 className="modal-title w-100 font-weight-bold">SMS Alert Charges</h4>
-                <button type="button"  className="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
               </div>
@@ -611,26 +640,24 @@ class Models extends Component {
                   <span aria-hidden="true">×</span>
                 </button>
               </div>
-			  
-			  
-			  
-	   	  
-			  
-			  
+
+
+
+
+
+
               <div className="modal-body mx-3">
-                <form>
-                  <p>
-                    All your data will be cleared
+                <p>
+                  All your data will be cleared
                   </p>
-                  <div className="form-label-group">
-                    <input type="password" className="form-control form-control-lg" id="label-password" placeholder="Enter Password" />
-                    <label htmlFor="label-password">Enter Password</label>
-                  </div>
-                </form>
+                <div className="form-label-group">
+                  <input type="password" className="form-control form-control-lg" id="label-password" placeholder="Enter Password" value={this.state.delete_account_password} onChange={this.handle_password} />
+                  <label htmlFor="label-password">Enter Password</label>
+                </div>
               </div>
               <div className="modal-footer d-flex justify-content-center">
-                <button className="btn btn-gradient-danger btn-lg ">Cancel</button>
-                <button className="btn btn-gradient-primary btn-lg ">Confirm &amp; Delete</button>
+                <button className="btn btn-gradient-danger btn-lg " onClick={this.delete_account_modal_hide}>Cancel</button>
+                <button className="btn btn-gradient-primary btn-lg " onClick={this.delete_account}>Confirm &amp; Delete</button>
               </div>
             </div>
           </div>
@@ -655,7 +682,7 @@ class Models extends Component {
                         <h6 className="ml-1 mb-1  mdi mdi-dots-horizontal"> </h6>
                         <small className="text-muted mb-0">
                           good</small>
-                      </div>                
+                      </div>
                     </div>
                     <div className="wrapper  preview-thumbnail d-flex align-items-center py-2 border-bottom">
                       <i className=" mdi mdi-lead-pencil " />
@@ -663,7 +690,7 @@ class Models extends Component {
                         <h6 className="ml-1 mb-1  mdi mdi-dots-horizontal"> </h6>
                         <small className="text-muted mb-0">
                           good</small>
-                      </div>                
+                      </div>
                     </div>
                     <div className="wrapper  preview-thumbnail d-flex align-items-center py-2 border-bottom">
                       <i className=" mdi mdi-lead-pencil " />
@@ -671,7 +698,7 @@ class Models extends Component {
                         <h6 className="ml-1 mb-1  mdi mdi-dots-horizontal"> </h6>
                         <small className="text-muted mb-0">
                           good</small>
-                      </div>                
+                      </div>
                     </div>
                     <div className="wrapper  preview-thumbnail d-flex align-items-center py-2 border-bottom">
                       <i className=" mdi mdi-lead-pencil " />
@@ -679,7 +706,7 @@ class Models extends Component {
                         <h6 className="ml-1 mb-1  mdi mdi-dots-horizontal"> </h6>
                         <small className="text-muted mb-0">
                           good</small>
-                      </div>                
+                      </div>
                     </div>
                   </div>
                 </form>
@@ -708,8 +735,8 @@ class Models extends Component {
             </div>
           </div>
         </div>
-		
-		 <div className="modal fade" id="updateprofilesuccess" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+
+        <div className="modal fade" id="updateprofilesuccess" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header text-center">
@@ -717,13 +744,13 @@ class Models extends Component {
                 <button type="button" onClick={this.updateOk} className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
-				</div>
-				</div>
-				</div>
-				</div>
-			
-{/*password otp Modal*/}			
-			<div className="modal fade" id="resetotp" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/*password otp Modal*/}
+        <div className="modal fade" id="resetotp" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header text-center">
@@ -733,44 +760,44 @@ class Models extends Component {
                 </button>
               </div>
               <div className="modal-body mx-3">
-            
-                  <div className="form-label-group">
-                    <input type="password" className="form-control form-control-lg" id="passwordotp" placeholder="Current Password" />
-                   
-                  </div>
-                  
-                
+
+                <div className="form-label-group">
+                  <input type="password" className="form-control form-control-lg" id="passwordotp" placeholder="Current Password" />
+
+                </div>
+
+
               </div>
               <div className="modal-footer d-flex justify-content-center">
-                
+
                 <button onClick={this.changePassword} className="btn btn-gradient-primary btn-lg ">Confirm</button>
               </div>
             </div>
           </div>
-        </div>	
-		
-		
-		
-		<div className="modal fade" id="errormodel" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        </div>
+
+
+
+        <div className="modal fade" id="errormodel" tabIndex={-1} role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div className="modal-dialog" role="document">
             <div className="modal-content">
               <div className="modal-header text-center">
                 <h4 id="errormessage" className="modal-title w-100 font-weight-bold"></h4>
-                <button type="button"  className="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">×</span>
                 </button>
-				</div>
-				</div>
-				</div>
-				</div>
-		
-				
-              
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
       </div>
-      
+
     );
   }
 }
- 
+
 export default Models;
 

@@ -25,6 +25,14 @@ class Login extends Component {
 
   }
 
+  componentDidMount() {
+    var input = document.querySelector("#tel");
+    window.intlTelInput(input, {
+      // any initialisation options go here
+      separateDialCode: true,
+    });
+  }
+
 
   // contextTypes: {
   //   router: React.PropTypes.func.isRequired,
@@ -125,8 +133,8 @@ class Login extends Component {
                     <h4 className="text-center">Welcome Back, <br /> Jude</h4>
                     <form className="pt-3">
                       <div className="form-group">
-                        <label htmlFor="label-mno">Phone number</label>
-                        <input id="tel" type="tel" className="form-control form-control-lg" placeholder="Phone Number" />
+                        <label htmlFor="label-mno" className="w-100">Phone number</label>
+                        <input id="tel" type="tel" className="form-control form-control-lg w-100" placeholder="Phone Number" />
                       </div>
                       <div className="form-group">
                         <label htmlFor="label-password">Password</label>

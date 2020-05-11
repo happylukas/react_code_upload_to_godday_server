@@ -7,6 +7,7 @@ import Dashboard from './dashboard.js';
 import Signupm from './signupm.js';
 import Delcard from './delcard.js';
 //import Chat from "./chat.js";
+import './custom.css';
 class App extends Component {
   render() {
 
@@ -14,6 +15,7 @@ class App extends Component {
       <BrowserRouter>
         <div>
           <Switch>
+		    <Route exact path="/" component={Login} />
             <Route path="/Login" component={Login} />
             <Route path="/Dashboard" component={Dashboard} />
             <Route path="/Signup" component={Signup} />

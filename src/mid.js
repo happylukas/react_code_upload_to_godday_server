@@ -8,6 +8,7 @@ import {
 import Chat from "./chat.js";
 import Payment from "./payment.js";
 import Notifications from "./notifications.js";
+import Gram from "./wayagram.js";
 
 
 
@@ -110,7 +111,6 @@ class Mid extends Component {
     var fn = '';
     var pp = '';
     console.log("USERRRRRRR", user.data.user_id);
-    console.log(result);
 
     $.each(res.data.reverse(), function (index, element) {
 
@@ -245,7 +245,7 @@ class Mid extends Component {
                   </div>
                 </li>
                 <li className="nav-item nav-logout d-none d-lg-block">
-                  <a className="nav-link" href="wayagram.html">
+                  <a className="nav-link" href="/dashboard#/wayagram">
                     <i className=" mdi mdi-window-maximize " /> Waya Gram
                   </a>
                 </li>
@@ -342,6 +342,7 @@ class Mid extends Component {
               <HashRouter>
 
                 <div className="content">
+				 <Route path="/wayagram" component={Gram} />
                   <Route path="/chat" component={Chat} />
                   <Route path="/wayapay" component={Payment} />
                   <Route path="/notifications" component={Notifications} />
